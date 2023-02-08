@@ -1,0 +1,26 @@
+=== Agent Install Log ===
+=== Agent Compile Log ===
+=== Agent Error Log ===
+node:internal/modules/cjs/loader:1042
+  throw err;
+  ^
+
+Error: Cannot find module './ChinoFarmer/Units/WorkerRole'
+Require stack:
+- C:\Users\vjame\Desktop\Projects\ArrozConPollo\main.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1039:15)
+    at Module._load (node:internal/modules/cjs/loader:885:27)
+    at Module.require (node:internal/modules/cjs/loader:1105:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (C:\Users\vjame\Desktop\Projects\ArrozConPollo\main.js:4:20)
+    at Module._compile (node:internal/modules/cjs/loader:1218:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1272:10)
+    at Module.load (node:internal/modules/cjs/loader:1081:32)
+    at Module._load (node:internal/modules/cjs/loader:922:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:82:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ 'C:\\Users\\vjame\\Desktop\\Projects\\ArrozConPollo\\main.js' ]
+}
+
+Node.js v19.2.0
+Agent timed out
