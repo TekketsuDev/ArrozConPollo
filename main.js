@@ -6,6 +6,7 @@ const agent = new kit.Agent();
 const annotate = kit.annotate;
 
 // first initialize the agent, and then proceed to go in a loop waiting for updates and running the AI
+
 agent.initialize().then(async () => {
   while (true) {
     /** Do not edit! **/
