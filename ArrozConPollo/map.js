@@ -1,3 +1,4 @@
+
 class HeatMap {
     constructor(height, width){
         this.height = height;
@@ -19,7 +20,7 @@ class HeatMap {
     */
 
 
-    initializeMap() {
+    initializeMap(gameMap) {
       let map = [];
       for (let y = 0; y < gameMap.height; y++) {
         for (let x = 0; x < gameMap.width; x++) {
@@ -52,8 +53,13 @@ class HeatMap {
         //TOP-RIGHT remove adjacent [x+1, y] [x, y-1]
         //BOTTOM-LEFT remove adjacent [x, y+1] [x-1, y]
         //BOTTOM-RIGHT remove adjacent [x+1, y], [x, y+1]
-
-/*           let adjacentCell = [[x+1, y], [x, y+1], [x-1, y], [x, y-1]];
+        for (let y = 0; y < gameMap.height; y++) {
+          for (let x = 0; x < gameMap.width; x++) {
+            const adjacentCell = [[x+1, y], [x, y+1], [x-1, y], [x, y-1]];
+            map[y][x] = ;     
+          }
+        }
+/*           let adjacentCell = 
           if (x == 0) // dont check [x-1, y]
           switch (true) {
             case (x == 0 && y== 0):
