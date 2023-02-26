@@ -1,4 +1,5 @@
-class gameState {
+class StateMachine {
+    
     
     update(){
         this.actions = new Array();
@@ -13,7 +14,6 @@ class gameState {
         this.workersRole();
         this.workersDecision();
         this.citiesRole();
-        this.stateMachine();
         return this.actions;
     }
 

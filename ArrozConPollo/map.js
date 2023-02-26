@@ -1,4 +1,3 @@
-
 class HeatMap {
     constructor(){
     }
@@ -27,13 +26,14 @@ class HeatMap {
           map[y][x] = this.checkTile(cell);     
         }
       }
+      return this.map
     }
     checkTile(cell){
       let typeofTile;
       if(cell.hasResource()){
   
         if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
-          typeofTile = 'W';
+          typeofTile = '1';
         }
         else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL){
           typeofTile = 'C';
@@ -47,7 +47,7 @@ class HeatMap {
       }
       return typeofTile;
      }
-    mostEfficientTile(map){
+    mostEfficientTile(gameMap, map){
       
       //TOP-LEFT remove adjacent [x-1, y], [x, y-1]
       //TOP-RIGHT remove adjacent [x+1, y] [x, y-1]
@@ -79,29 +79,7 @@ class HeatMap {
           if(map[x][y] = 5 || 4){
             x.push(this.ValueTile);
           }
+        }
+      }
      }
 }
-    
-/*           let adjacentCell = 
-          if (x == 0) // dont check [x-1, y]
-          switch (true) {
-            case (x == 0 && y== 0):
-              
-              break;
-            case (x ==):
-              
-            break;
-
-            case (value):
-              
-            break;
-
-            case (value):
-              
-            break;
-          
-            default:
-              break;
-          }
-          resourceTiles.push(cell);
-          */

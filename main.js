@@ -21,6 +21,9 @@ agent.initialize().then(async () => {
     const opponent = gameState.players[(gameState.id + 1) % 2];
     const gameMap = gameState.map;
 
+    const heatMap = new HeatMap(gameMap);
+    const stateMachine = new StateMachine();
+
     for (let i = 0; i < player.units.length; i++) {
         let unit = player.units[i];
         
