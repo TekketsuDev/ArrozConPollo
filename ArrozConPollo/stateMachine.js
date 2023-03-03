@@ -17,8 +17,11 @@ class StateMachine {
         return this.actions;
     }
 
-    refresh(    
+    refresh(
+
     )
+
+    
 
 }
 

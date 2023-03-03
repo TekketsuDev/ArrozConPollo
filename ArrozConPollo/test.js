@@ -1,10 +1,6 @@
-let map = [];
-for (let y = 0; y < 5; y++) {
-  map[y] = [];
-  for (let x = 0; x < 9; x++) {
-    const cell = gameMap.getCell(x, y);
-    map[y][x] = null
-     
-    }
-  }
-  console.log(map);
+var arr = [1];
+let x = 34;
+let y = 43;
+var newItems = [2, 3];
+arr.push(x, y);
+console.log(arr);
