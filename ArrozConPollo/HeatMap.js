@@ -1,4 +1,3 @@
-const kit = require('../lux/kit');
 const GAME_CONSTANTS = require('../lux/game_constants');
 const { Console } = require('console');
 class HeatMap {
@@ -10,15 +9,33 @@ class HeatMap {
     this.gameMap = gameState.map;
     this.player = gameState.players[gameState.id];
     this.enemy = gameState.players[(gameState.id + 1) % 2];
-    this.playerUnits = 1;
+
+   //console.table(this.player.units[0].pos.x);
+    this.playerUnitsPosArray = this.updateOwnWorkers();
+    this.enemyUnitsPosArray = this.updateEnemyWorkers();
+    console.table(playerUnitsPosArray);
     this.enemyUnits = gameState.players;
     this.currentOwnWorkersPos = [];
     this.currentEnemyWorkersPos = [];
-    this.heat= this.initializeMap(this.gameMap);
+    this.heatMap = this.initializeMap(this.gameMap);
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
      
   
   }
+
+  updateOwnWorkers(){
+    for(let u= 0; u < this.player.units.length; u++){
+      this.playerUnitsPosArray.push(this.player.units[u].pos.x);
+    }
+    return this.playerUnitsPosArray;
+  }
+  updateEnemyWorkers(){
+    for(let u=0; u < this.enemy.units.length; u++){
+      this.enemyUnitsPosArray.push(this.enemy.units[u].pos);
+    }
+    return this.enemyUnitsPosArray;
+  }
+
   /*
         gameMap.getCellByPos(unit.pos).hasResource();
   */
@@ -35,40 +52,40 @@ class HeatMap {
     
   }
   checkTile(cell){
-    let typeofTile;
+    let tileState;
     if(cell.hasResource()){
-      console.table(cell.resource.amount); 
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
-        return typeofTile = 1;
+        if(cell)
+        tileState = ['Fuel',cell.resource.amount < 20 ? cell.resource.amount : 20];
       }
-      else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL){
-        return typeofTile = 'COAL';
+      else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL ){
+        tileState = ['Fuel',this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.URANIUM){
-        return typeofTile = 'URANIUM';
+        tileState = this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0;
       }
     }
     else if(cell.citytile != null) {
-      
       if(cell.citytile.team == this.player.team){
-        return typeofTile = 'ArrozCity';
+        tileState = 'ArrozCity';
       }
       else if(cell.citytile.team == this.enemy.team){
-        return typeofTile = 'EnemyCity';
+        tileState = 'EnemyCity';
       }
     }
-    else{
-      return typeofTile = 'Avariable';
-    }
-/*     else if(cell.pos.equals(this.player)){
+    if(cell.pos.equals(this.player)){
       
-      return typeofTile = 'EnemyWorker';
+      tileState = 'EnemyWorker';
     }
     else if(cell.pos.equals(this.enemy)){
       
-      return typeofTile = 'OwnWorker';
-    } */
+      typeofTile = 'OwnWorker';
+    }
+    else{
+       tileState = 'Avariable';
+    }
+    return tileState;
 
 
   }
@@ -78,27 +95,28 @@ class HeatMap {
     //TOP-RIGHT remove adjacent [x+1, y] [x, y-1]
     //BOTTOM-LEFT remove adjacent [x, y+1] [x-1, y]
     //BOTTOM-RIGHT remove adjacent [x+1, y], [x, y+1]
-    const valueTile = []; 
     for (let y = 0; y < gameMap.height; y++) {
       for (let x = 0; x < gameMap.width; x++) {
         let current = map[x][y];
-
         let adjacentCells = [];
         if(x == 0 || y== 0 || y == gameMap.height || x == gameMap.width){
-          if(x == 0)
+          if(x == 0){
             adjacentCells.push(map[x+1][y]);
-          if(y == 0)
+          }
+          if(y == 0){
             adjacentCells.push(map[x][y+1]);
-          if(x == gameMap.width)
+          }
+          if(x == gameMap.width){
             adjacentCells.push(map[x-1][y]);
-          if(y == gameMap.height)
+          }
+          if(y == gameMap.height){
             adjacentCells.push(map[x][y-1]);
-
-          adjacentCells.forEach(adjCell => {if(adjCell == map[x][y]){current++} });
+          }
+          adjacentCells.forEach(adjCell => {if(Number.isInteger(adjCell)){current += adjCell}});
         }
         else{
           adjacentCells = [(current[x+1][y]), (current[x][y+1]), (current[x-1][y]), (current[x][y-1])];
-          adjacentCells.forEach(adjCell => {if(adjCell == map[x][y]){current++} });
+          adjacentCells.forEach(adjCell => {if(Number.isInteger(adjCell)){current += adjCell}});
         }
         this.map[y][x] = current;
         if(map[x][y] = 5 || 4){
