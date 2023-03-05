@@ -2,50 +2,44 @@ const GAME_CONSTANTS = require('../lux/game_constants');
 const { Console } = require('console');
 class HeatMap {
   constructor(){
-
+    
   }
   update(gameState) {
     this.gameState = gameState;
     this.gameMap = gameState.map;
     this.player = gameState.players[gameState.id];
     this.enemy = gameState.players[(gameState.id + 1) % 2];
-
-   //console.table(this.player.units[0].pos.x);
+    this.enemyUnitsPosArray = new Array();
+    this.playerUnitsPosArray = new Array();
+    
+   
     this.playerUnitsPosArray = this.updateOwnWorkers();
     this.enemyUnitsPosArray = this.updateEnemyWorkers();
-    console.table(playerUnitsPosArray);
-    this.enemyUnits = gameState.players;
-    this.currentOwnWorkersPos = [];
-    this.currentEnemyWorkersPos = [];
+    
     this.heatMap = this.initializeMap(this.gameMap);
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
-     
-  
   }
-
   updateOwnWorkers(){
     for(let u= 0; u < this.player.units.length; u++){
-      this.playerUnitsPosArray.push(this.player.units[u].pos.x);
+      this.playerUnitsPosArray.push(this.player.units[u].pos);
     }
     return this.playerUnitsPosArray;
   }
   updateEnemyWorkers(){
     for(let u=0; u < this.enemy.units.length; u++){
       this.enemyUnitsPosArray.push(this.enemy.units[u].pos);
+      this
     }
     return this.enemyUnitsPosArray;
   }
-
-  /*
-        gameMap.getCellByPos(unit.pos).hasResource();
-  */
-
   initializeMap(gameMap) {
     this.map = new Array(gameMap.height).fill().map(() => new Array(gameMap.width).fill());
+    console.table(this.map);
     for (let y = 0; y < gameMap.height; y++) {
       for (let x = 0; x < gameMap.width; x++) {
-        let cell = gameMap.getCell(x, y);
-        this.map[y][x] = this.checkTile(cell);
+        
+        /* let cell = gameMap.getCell(x, y);
+        this.map[x][y] = this.checkTile(cell); */
       }
     }
     return this.map;
@@ -57,10 +51,10 @@ class HeatMap {
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
         if(cell)
-        tileState = ['Fuel',cell.resource.amount < 20 ? cell.resource.amount : 20];
+        tileState = ['F',cell.resource.amount < 20 ? cell.resource.amount : 20];
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL ){
-        tileState = ['Fuel',this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
+        tileState = ['F',this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.URANIUM){
         tileState = this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0;
@@ -68,25 +62,16 @@ class HeatMap {
     }
     else if(cell.citytile != null) {
       if(cell.citytile.team == this.player.team){
-        tileState = 'ArrozCity';
+        tileState = 'p';
       }
       else if(cell.citytile.team == this.enemy.team){
-        tileState = 'EnemyCity';
+        tileState = 'E';
       }
     }
-    if(cell.pos.equals(this.player)){
-      
-      tileState = 'EnemyWorker';
-    }
-    else if(cell.pos.equals(this.enemy)){
-      
-      typeofTile = 'OwnWorker';
-    }
     else{
-       tileState = 'Avariable';
+       tileState = 'AVA';
     }
     return tileState;
-
 
   }
   mostEfficientTile(gameMap, map){
