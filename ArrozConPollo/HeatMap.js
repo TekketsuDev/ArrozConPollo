@@ -1,10 +1,13 @@
 const GAME_CONSTANTS = require('../lux/game_constants');
 const { Console } = require('console');
 class HeatMap {
-  constructor(){
-    
+  constructor(gameState){
+    this.gameState = gameState;
+    this.gameMap = gameState.map;
+    this.width = gameState.map.width;
+    this.height = gameState.map.height;
   }
-  update(gameState) {
+  update() {
     this.gameState = gameState;
     this.gameMap = gameState.map;
     this.player = gameState.players[gameState.id];
@@ -15,8 +18,10 @@ class HeatMap {
    
     this.playerUnitsPosArray = this.updateOwnWorkers();
     this.enemyUnitsPosArray = this.updateEnemyWorkers();
+    this.map = new Array(this.height).fill().map(() => new Array(this.width).fill());
     
     this.heatMap = this.initializeMap(this.gameMap);
+    console.table(this.heatMap);
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
   }
   updateOwnWorkers(){
@@ -33,15 +38,15 @@ class HeatMap {
     return this.enemyUnitsPosArray;
   }
   initializeMap(gameMap) {
-    this.map = new Array(gameMap.height).fill().map(() => new Array(gameMap.width).fill());
-    console.table(this.map);
     for (let y = 0; y < gameMap.height; y++) {
       for (let x = 0; x < gameMap.width; x++) {
         
-        /* let cell = gameMap.getCell(x, y);
-        this.map[x][y] = this.checkTile(cell); */
+        let cell = gameMap.getCell(x, y);
+        this.map[x][y] = this.checkTile(cell); 
       }
+
     }
+    console.table(this.map);
     return this.map;
     
   }

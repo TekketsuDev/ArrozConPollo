@@ -22,7 +22,7 @@ agent.initialize().then(async () => {
     const player = gameState.players[gameState.id];
     const opponent = gameState.players[(gameState.id + 1) % 2];
     const gameMap = gameState.map;
-    const heat = new HeatMap();
+    const heat = new HeatMap(gameState);
     let map = heat.update(gameState);
 
     //const stateMachine = new StateMachine();
