@@ -7,7 +7,7 @@ class HeatMap {
     this.width = gameState.map.width;
     this.height = gameState.map.height;
   }
-  update() {
+  update(gameState) {
     this.gameState = gameState;
     this.gameMap = gameState.map;
     this.player = gameState.players[gameState.id];
@@ -21,7 +21,6 @@ class HeatMap {
     this.map = new Array(this.height).fill().map(() => new Array(this.width).fill());
     
     this.heatMap = this.initializeMap(this.gameMap);
-    console.table(this.heatMap);
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
   }
   updateOwnWorkers(){
@@ -33,29 +32,26 @@ class HeatMap {
   updateEnemyWorkers(){
     for(let u=0; u < this.enemy.units.length; u++){
       this.enemyUnitsPosArray.push(this.enemy.units[u].pos);
-      this
     }
     return this.enemyUnitsPosArray;
   }
-  initializeMap(gameMap) {
+  initializeMap(gameMap){
     for (let y = 0; y < gameMap.height; y++) {
       for (let x = 0; x < gameMap.width; x++) {
         
         let cell = gameMap.getCell(x, y);
-        this.map[x][y] = this.checkTile(cell); 
+        this.map[x][y] = this.checkTile(cell, x, y); 
+        
       }
-
     }
-    console.table(this.map);
     return this.map;
-    
   }
-  checkTile(cell){
+  checkTile(cell, x, y){
     let tileState;
+
     if(cell.hasResource()){
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
-        if(cell)
         tileState = ['F',cell.resource.amount < 20 ? cell.resource.amount : 20];
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL ){
@@ -67,14 +63,14 @@ class HeatMap {
     }
     else if(cell.citytile != null) {
       if(cell.citytile.team == this.player.team){
-        tileState = 'p';
+        tileState = 'ArrozCity';
       }
       else if(cell.citytile.team == this.enemy.team){
-        tileState = 'E';
+        tileState = 'EnemyCity';
       }
     }
     else{
-       tileState = 'AVA';
+       tileState = 'canBuild';
     }
     return tileState;
 
@@ -118,5 +114,48 @@ class HeatMap {
       valueTile: this.valueTile(),
     }
   }
+
+  bestCityTileSpot(CityRole, CityID){
+    switch (CityRole) {
+      case 'Research':
+        break;
+      case 'SurviveFewResources':
+        break;
+      case 'Metropolis':
+        break;
+      case 'Mining':
+        break;
+      default:
+        break;
+    }
+    for (let y = 0; y < gameMap.height; y++) {
+      for (let x = 0; x < gameMap.width; x++) {
+        let current = map[x][y];
+        let adjacentCells = [];
+        if(x == 0 || y== 0 || y == gameMap.height || x == gameMap.width){
+          if(x == 0){
+            adjacentCells.push(map[x+1][y]);
+          }
+          if(y == 0){
+            adjacentCells.push(map[x][y+1]);
+          }
+          if(x == gameMap.width){
+            adjacentCells.push(map[x-1][y]);
+          }
+          if(y == gameMap.height){
+            adjacentCells.push(map[x][y-1]);
+          }
+          adjacentCells.forEach(adjCell => {if(Number.isInteger(adjCell)){current += adjCell}});
+        }
+        else{
+          adjacentCells = [(current[x+1][y]), (current[x][y+1]), (current[x-1][y]), (current[x][y-1])];
+          adjacentCells.forEach(adjCell => {if(Number.isInteger(adjCell)){current += adjCell}});
+        }
+        this.map[y][x] = current;
+      }
+    }
+   
+  }
+
 }
 module.exports = HeatMap;

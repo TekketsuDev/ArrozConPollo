@@ -20,9 +20,21 @@ class StateMachine {
     refresh(
 
     )
-    
-    
+    /* 
+        RECIVE DESIRED OPTIONS 
+    */
 
+    /* 
+        MANAGE COLISIONS 
+    */
+    
+    /* 
+        CHANGE DESIRE OF LESS PRIORITY LEVEL UNIT GOALS
+    */
+
+    /* 
+        REASIGN ROLES IF NECESSARY
+    */
 }
 
 
