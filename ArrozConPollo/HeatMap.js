@@ -1,3 +1,4 @@
+"use strict";
 const GAME_CONSTANTS = require('../lux/game_constants');
 const { Console } = require('console');
 class HeatMap {
@@ -18,21 +19,18 @@ class HeatMap {
    
     this.playerUnitsPosArray = this.updateOwnWorkers();
     this.enemyUnitsPosArray = this.updateEnemyWorkers();
+    console.table(this.playerUnitsPosArray);
+    console.log(this.playerUnitsPosArray);
     this.map = new Array(this.height).fill().map(() => new Array(this.width).fill());
     
     this.heatMap = this.initializeMap(this.gameMap);
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
   }
-  updateOwnWorkers(){
-    for(let u= 0; u < this.player.units.length; u++){
-      this.playerUnitsPosArray.push(this.player.units[u].pos);
-    }
-    return this.playerUnitsPosArray;
+  updateWorkers(x,y){
+
   }
   updateEnemyWorkers(){
-    for(let u=0; u < this.enemy.units.length; u++){
-      this.enemyUnitsPosArray.push(this.enemy.units[u].pos);
-    }
+   
     return this.enemyUnitsPosArray;
   }
   initializeMap(gameMap){
@@ -40,39 +38,65 @@ class HeatMap {
       for (let x = 0; x < gameMap.width; x++) {
         
         let cell = gameMap.getCell(x, y);
-        this.map[x][y] = this.checkTile(cell, x, y); 
+        this.map[x][y] = this.checkTile(cell, x, y, 0); 
         
       }
     }
     return this.map;
   }
-  checkTile(cell, x, y){
-    let tileState;
+  checkTile(cell, x, y, tileState){
+   
+    /* 
+      tile = [TypeOfTile, TileState, Value]
+      [TypeOfTile]              [TileState]                                        [Value]
+      |    Fuel     | Taken / Avariable /WanttoStay           | Unknown/ FuelxTurn/ OwnWorker(ID)/ EnemyWorker(ID) |
+      |  ArrozCity  |    Avariable/ Assigned / Occupied       | OwnWorker(ID)/ FuelxTurn                           |
+      |  EnemyCity  |                   -                     |                       -                            |
+      |  canBuild   | WanttoBuild/ willMove/ Stay, WanttoStay | OwnWorker(ID)/ EnemyWorker(ID)/ Avariable          |
+    */
+    let tile;
+    let isOwnWorker = false;
+    let isEnemyWorker = false;
+    
+    for(let unit in this.player.units){
+      if(unit.pos.x == x && unit.pos.y == y){
+        tile[2] = unit.id;
+        isOwnWorker = true;
+      }
+    }
+    for(let unit in this.enemy.units){
+      if(unit.pos.x == x && unit.pos.y == y){
+        tile[2] = unit.id;
+        isEnemyWorker = true;
+      }
+    }
 
     if(cell.hasResource()){
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
-        tileState = ['F',cell.resource.amount < 20 ? cell.resource.amount : 20];
+        tile = ['Fuel', tileState];
+        if(isOwnWorker|| isEnemyWorker == false){tile[2] = cell.resource.amount < 20 ? cell.resource.amount : 20}
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL ){
-        tileState = ['F',this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
+        tile = ['Fuel', tileState, this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
+        if(isOwnWorker|| isEnemyWorker == false){ tile[2] = cell.resource.amount < 50 ? cell.resource.amount : 20}
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.URANIUM){
-        tileState = this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0;
+        tile = ['Fuel', tileState, this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0];
       }
     }
     else if(cell.citytile != null) {
       if(cell.citytile.team == this.player.team){
-        tileState = 'ArrozCity';
+        tile = 'ArrozCity', tileState;
       }
       else if(cell.citytile.team == this.enemy.team){
-        tileState = 'EnemyCity';
+        tile = 'EnemyCity';
       }
     }
     else{
-       tileState = 'canBuild';
+       tile = 'canBuild';
     }
-    return tileState;
+    return tile;
 
   }
   mostEfficientTile(gameMap, map){
@@ -115,6 +139,9 @@ class HeatMap {
     }
   }
 
+  woodMapCity(){
+
+  }
   bestCityTileSpot(CityRole, CityID){
     switch (CityRole) {
       case 'Research':
