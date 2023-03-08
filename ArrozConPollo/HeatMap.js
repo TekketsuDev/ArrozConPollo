@@ -38,7 +38,7 @@ class HeatMap {
       for (let x = 0; x < gameMap.width; x++) {
         
         let cell = gameMap.getCell(x, y);
-        this.map[x][y] = this.checkTile(cell, x, y, 0); 
+        this.map[x][y] = this.checkTile(cell, x, y, 'Avariable'); 
         
       }
     }
@@ -48,41 +48,35 @@ class HeatMap {
    
     /* 
       tile = [TypeOfTile, TileState, Value]
-      [TypeOfTile]              [TileState]                                        [Value]
-      |    Fuel     | Taken / Avariable /WanttoStay           | Unknown/ FuelxTurn/ OwnWorker(ID)/ EnemyWorker(ID) |
-      |  ArrozCity  |    Avariable/ Assigned / Occupied       | OwnWorker(ID)/ FuelxTurn                           |
-      |  EnemyCity  |                   -                     |                       -                            |
-      |  canBuild   | WanttoBuild/ willMove/ Stay, WanttoStay | OwnWorker(ID)/ EnemyWorker(ID)/ Avariable          |
+      [TypeOfTile]              [TileState]                          [Value]                              [IsUnit]
+      |    Fuel     | Taken / Avariable /WanttoStay                  | Unknown/ FuelxTurn/ |  OwnWorker(ID)/ EnemyWorker(ID)
+      |  ArrozCity  |    Avariable/ Assigned / Stay/ willMove        | FuelxTurn           |  OwnWorker(ID)/
+      |  EnemyCity  |                   -                            |       -             |  EnemyWorker(ID)
+      |  canBuild   | WanttoBuild/ willMove/ Stay, WanttoStay/ Taken | FuelxTurn(if City)  | OwnWorker(ID)/ EnemyWorker(ID)
     */
+
     let tile;
     let isOwnWorker = false;
     let isEnemyWorker = false;
-    
-    for(let unit in this.player.units){
-      if(unit.pos.x == x && unit.pos.y == y){
-        tile[2] = unit.id;
-        isOwnWorker = true;
-      }
-    }
-    for(let unit in this.enemy.units){
-      if(unit.pos.x == x && unit.pos.y == y){
-        tile[2] = unit.id;
-        isEnemyWorker = true;
-      }
-    }
 
     if(cell.hasResource()){
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
         tile = ['Fuel', tileState];
-        if(isOwnWorker|| isEnemyWorker == false){tile[2] = cell.resource.amount < 20 ? cell.resource.amount : 20}
+        if(isOwnWorker|| isEnemyWorker == false){
+          tile[2] = cell.resource.amount < 20 ? cell.resource.amount : 20
+        }
       }
-      else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL ){
-        tile = ['Fuel', tileState, this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
-        if(isOwnWorker|| isEnemyWorker == false){ tile[2] = cell.resource.amount < 50 ? cell.resource.amount : 20}
+      else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL){
+        tile = ['Fuel', tileState];
+        if(isOwnWorker|| isEnemyWorker == false){
+          tile[2] = this.player.researchedCoal() ? cell.resource.amount < 50 ? cell.resource.amount : 50, 0}
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.URANIUM){
-        tile = ['Fuel', tileState, this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0];
+        tile = ['Fuel', tileState];
+        if(isOwnWorker|| isEnemyWorker == false){
+          tile[2] = cell.resource.amount < 80 ? cell.resource.amount : 80
+        }
       }
     }
     else if(cell.citytile != null) {
@@ -98,6 +92,17 @@ class HeatMap {
     }
     return tile;
 
+  }
+  updateWorkers(){
+    for(let u = 0; u < this.player.units.length; u++){
+        let tile = this.map[this.player.units[u].pos.x][this.player.units[u].pos.y]
+        tile[3] = this.player.units[u].id;
+       
+    }
+    for(let u = 0; u < this.enemy.units.length; u++){
+      let tile = this.map[this.enemy.units[u].pos.x][this.enemy.units[u].pos.y]
+      tile[3] = this.enemy.units[u].id;
+    }
   }
   mostEfficientTile(gameMap, map){
 
