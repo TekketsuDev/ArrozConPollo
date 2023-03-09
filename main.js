@@ -2,6 +2,7 @@ const kit = require('./lux/kit');
 const GAME_CONSTANTS = require('./lux/game_constants');
 const DIRECTIONS = GAME_CONSTANTS.DIRECTIONS;
 const HeatMap = require("./ArrozConPollo/HeatMap");
+const Astar_1 = require("./ArrozConPollo/utils/Astar");
 // create a new agent
 const agent = new kit.Agent();
 const annotate = kit.annotate;
@@ -24,6 +25,7 @@ agent.initialize().then(async () => {
     const gameMap = gameState.map;
     const heat = new HeatMap(gameState);
     let map = heat.update(gameState);
+    const Astar = new Astar_1(gameState).getArrayPath();
 
     //const stateMachine = new StateMachine();
     for (let i = 0; i < player.units.length; i++) {

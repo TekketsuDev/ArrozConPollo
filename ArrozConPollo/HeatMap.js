@@ -135,7 +135,7 @@ class HeatMap {
   }
 
   woodMapCity(){
-
+    
   }
   bestCityTileSpot(CityRole, CityID){
     switch (CityRole) {

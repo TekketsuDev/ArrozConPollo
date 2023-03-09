@@ -15,8 +15,18 @@ function findPath(gameMap, pathX, pathY, DesiredCell)
 	// 1) Create BFS queue q
 		let queue = [];
     // 2) Push Starting Cell
-		queue.push(new PathFinding(pathX, pathY));
-	
+	for (let i = 0; i < gameMap.height; ++i) {
+		for (let j = 0; j < gameMap.width; ++j) {
+
+			// if there exists a cell in the matrix such
+			// that its value is 1 then push it to q
+			if (gameMap[i][j] == 'Ud1') {
+				queue.push(new PathFinding(i, j));
+				console.log('Starting Cell: ' + i + ' ' + j)
+				break;
+			}
+		}
+	}
 	// 3) run BFS algorithm with q.
 		while (queue.length != 0)
 		{
@@ -37,8 +47,10 @@ function findPath(gameMap, pathX, pathY, DesiredCell)
 			// 3.1) if in the BFS algorithm process there was a
 			// vertex x=(i,j) such that M[i][j] is 2 stop and
 			// return true
-			if (gameMap[i][j] == DesiredCell)
+			if (gameMap[i][j] == DesiredCell){
+				console.log(queue);
 				return true;
+			}
 			
 			// marking as wall upon successful visitation
 			gameMap[i][j] = 0;
@@ -50,6 +62,7 @@ function findPath(gameMap, pathX, pathY, DesiredCell)
 				queue.push(new PathFinding(i + k, j));
 				queue.push(new PathFinding(i, j + k));
 			}
+			
 		}
 			
 	// BFS algorithm terminated without returning true
@@ -68,7 +81,7 @@ gameMap.height = 4;
 gameMap.width = 4;
 
 if(findPath(gameMap,0, 3,'Fuel') == true)
-	console.log("Yes");
+	console.log(gameMap);
 else
 	console.log("No");
 
