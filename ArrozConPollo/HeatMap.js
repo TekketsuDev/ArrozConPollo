@@ -56,27 +56,17 @@ class HeatMap {
     */
 
     let tile;
-    let isOwnWorker = false;
-    let isEnemyWorker = false;
 
     if(cell.hasResource()){
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
-        tile = ['Fuel', tileState];
-        if(isOwnWorker|| isEnemyWorker == false){
-          tile[2] = cell.resource.amount < 20 ? cell.resource.amount : 20
-        }
+        tile = ['Fuel', tileState, cell.resource.amount < 20 ? cell.resource.amount : 20];
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL){
-        tile = ['Fuel', tileState];
-        if(isOwnWorker|| isEnemyWorker == false){
-          tile[2] = this.player.researchedCoal() ? cell.resource.amount < 50 ? cell.resource.amount : 50, 0}
+        tile = ['Fuel', tileState, this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.URANIUM){
-        tile = ['Fuel', tileState];
-        if(isOwnWorker|| isEnemyWorker == false){
-          tile[2] = cell.resource.amount < 80 ? cell.resource.amount : 80
-        }
+        tile = ['Fuel', tileState, this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0];
       }
     }
     else if(cell.citytile != null) {
@@ -91,17 +81,17 @@ class HeatMap {
        tile = 'canBuild';
     }
     return tile;
-
+    
   }
+
   updateWorkers(){
     for(let u = 0; u < this.player.units.length; u++){
-        let tile = this.map[this.player.units[u].pos.x][this.player.units[u].pos.y]
-        tile[3] = this.player.units[u].id;
-       
+        let tile = this.map[this.player.units[u].pos.x][this.player.units[u].pos.y];
+        tile[3].push(this.player.units[u].id);
     }
     for(let u = 0; u < this.enemy.units.length; u++){
-      let tile = this.map[this.enemy.units[u].pos.x][this.enemy.units[u].pos.y]
-      tile[3] = this.enemy.units[u].id;
+      let tile = this.map[this.enemy.units[u].pos.x][this.enemy.units[u].pos.y];
+      tile[3].push(this.enemy.units[u].id);
     }
   }
   mostEfficientTile(gameMap, map){
