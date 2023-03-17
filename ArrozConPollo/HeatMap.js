@@ -1,6 +1,5 @@
 "use strict";
 const GAME_CONSTANTS = require('../lux/game_constants');
-const { Console } = require('console');
 class HeatMap {
   constructor(gameState){
     this.gameState = gameState;
@@ -15,36 +14,29 @@ class HeatMap {
     this.enemy = gameState.players[(gameState.id + 1) % 2];
     this.enemyUnitsPosArray = new Array();
     this.playerUnitsPosArray = new Array();
-    
+    this.tile = {};
    
-    this.playerUnitsPosArray = this.updateOwnWorkers();
-    this.enemyUnitsPosArray = this.updateEnemyWorkers();
-    console.table(this.playerUnitsPosArray);
-    console.log(this.playerUnitsPosArray);
     this.map = new Array(this.height).fill().map(() => new Array(this.width).fill());
     
-    this.heatMap = this.initializeMap(this.gameMap);
+    this.map = this.initializeMap(this.gameMap);
+    this.tile = this.updateWorkers();
+    return this.map;
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
-  }
-  updateWorkers(x,y){
-
-  }
-  updateEnemyWorkers(){
-   
-    return this.enemyUnitsPosArray;
   }
   initializeMap(gameMap){
     for (let y = 0; y < gameMap.height; y++) {
       for (let x = 0; x < gameMap.width; x++) {
         
         let cell = gameMap.getCell(x, y);
-        this.map[x][y] = this.checkTile(cell, x, y, 'Avariable'); 
-        
+        this.map[x][y] = this.checkTile(cell, x, y, ''); 
+         
       }
     }
     return this.map;
+
   }
-  checkTile(cell, x, y, tileState){
+  
+  checkTile(cell, x, y, tilestate){
    
     /* 
       tile = [TypeOfTile, TileState, Value]
@@ -55,44 +47,47 @@ class HeatMap {
       |  canBuild   | WanttoBuild/ willMove/ Stay, WanttoStay/ Taken | FuelxTurn(if City)  | OwnWorker(ID)/ EnemyWorker(ID)
     */
 
-    let tile;
+    
 
     if(cell.hasResource()){
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
-        tile = ['Fuel', tileState, cell.resource.amount < 20 ? cell.resource.amount : 20];
+        this.tile = {typeOfTile: 'Fuel', pos:{x: x, y:y} ,tileState: tilestate, value: cell.resource.amount < 20 ? cell.resource.amount : 20};
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.COAL){
-        tile = ['Fuel', tileState, this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0];
+        this.tile = {typeOfTile: 'Fuel', pos:{x: x, y:y} ,tileState: tilestate, value: this.player.researchedCoal() ? (cell.resource.amount < 50 ? cell.resource.amount : 50) : 0 };
       }
       else if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.URANIUM){
-        tile = ['Fuel', tileState, this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0];
+        this.tile = {typeOfTile: 'Fuel', pos:{x: x, y:y} ,tileState: tilestate, value: this.player.researchedUranium() ? (cell.resource.amount < 80 ? cell.resource.amount : 80) : 0};
       }
     }
     else if(cell.citytile != null) {
       if(cell.citytile.team == this.player.team){
-        tile = 'ArrozCity', tileState;
+        this.tile = {typeOfTile: 'ArrozCity', tileState: tilestate};
       }
       else if(cell.citytile.team == this.enemy.team){
-        tile = 'EnemyCity';
+        this.tile = {typeOfTile: 'EnemyCity'};
       }
     }
     else{
-       tile = 'canBuild';
+       this.tile = {typeOfTile: 'canBuild', tileState: tilestate};
     }
-    return tile;
+    return this.tile;
     
   }
 
   updateWorkers(){
     for(let u = 0; u < this.player.units.length; u++){
         let tile = this.map[this.player.units[u].pos.x][this.player.units[u].pos.y];
-        tile[3].push(this.player.units[u].id);
+       
+        //console.table(tile.typeOfTile/* , this.player.units[u].pos.x + " " + this.player.units[u].pos.y */);
+        tile.isUnit = this.player.units[u].id;
     }
-    for(let u = 0; u < this.enemy.units.length; u++){
+    return this;
+/*     for(let u = 0; u < this.enemy.units.length; u++){
       let tile = this.map[this.enemy.units[u].pos.x][this.enemy.units[u].pos.y];
       tile[3].push(this.enemy.units[u].id);
-    }
+    } */
   }
   mostEfficientTile(gameMap, map){
 
@@ -176,8 +171,6 @@ class HeatMap {
         this.map[y][x] = current;
       }
     }
-   
   }
-
 }
 module.exports = HeatMap;

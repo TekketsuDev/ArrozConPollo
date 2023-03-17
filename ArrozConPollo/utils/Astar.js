@@ -13,7 +13,7 @@ class Astar {
   }
   getArrayPath(){
   
-  return
+  return this.path;
   }
     //heuristic we will be using - Manhattan distance
   //for other heuristics visit - https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
@@ -27,7 +27,7 @@ class Astar {
   //constructor function to create all the grid points as objects containind the data for the points
    GridPoint(x, y) {
     this.x = x; //x location of the grid point
-    this.y = y; //y location of the grid point
+    this.y = y; //y location of the grid point  
     this.f = 0; //total cost function
     this.g = 0; //cost function from start to the current grid point
     this.h = 0; //heuristic estimated cost function from current grid point to the goal
