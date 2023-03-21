@@ -1,6 +1,13 @@
+"use strict";
 const HeatMap = require("./HeatMap");
 
 class PathFinding extends HeatMap{
+  static GetInstance() {
+    if (this.instance)
+        return this.instance;
+    this.instance = new PathFinding();
+    return this.instance;
+  }
   constructor(gameState, startingCell ,destinationCell){
       this.gameState = gameState;
       this.gameMap = gameState.map;
@@ -30,16 +37,16 @@ class PathFinding extends HeatMap{
     this.updateNeighbors = function (gameMap) {
         let i = this.x;
         let j = this.y;
-        if (i < gameMap.height - 1) {
+        if (i < gameMap.height - 1 && gameMap[i + 1][j] == 'canWalk') {
         this.neighbors.push(gameMap[i + 1][j]);
         }
-        if (i > 0) {
+        if (i > 0 && gameMap[i - 1][j] == 'canWalk') {
         this.neighbors.push(gameMap[i - 1][j]);
         }
-        if (j < gameMap.width - 1) {
+        if (j < gameMap.width - 1 && gameMap[i][j + 1] == 'canWalk') {
         this.neighbors.push(gameMap[i][j + 1]);
         }
-        if (j > 0) {
+        if (j > 0 && gameMap[i][j - 1] == 'canWalk') {
         this.neighbors.push(gameMap[i][j - 1]);
         }
     };
@@ -120,3 +127,4 @@ class PathFinding extends HeatMap{
   }
 
 }
+module.exports = PathFinding;

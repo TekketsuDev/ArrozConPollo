@@ -1,7 +1,9 @@
+"use strict"
 const kit = require('./lux/kit');
 const GAME_CONSTANTS = require('./lux/game_constants');
 const DIRECTIONS = GAME_CONSTANTS.DIRECTIONS;
 const HeatMap = require("./ArrozConPollo/Map/HeatMap");
+const PathFinding_1 = require("./ArrozConPollo/Map/PathFinding")
 // create a new agent
 const agent = new kit.Agent();
 const annotate = kit.annotate;
@@ -25,6 +27,7 @@ agent.initialize().then(async () => {
     const gameMap = gameState.map;
     const heat = new HeatMap(gameState);
     let map = heat.update(gameState);
+    PathFinding_1.PathFinding.GetIntance();
 
     
         
