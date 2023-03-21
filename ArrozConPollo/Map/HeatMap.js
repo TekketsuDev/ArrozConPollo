@@ -1,29 +1,39 @@
 "use strict";
 const GAME_CONSTANTS = require('../../lux/game_constants');
 class HeatMap {
+
+  static getIntance(){
+    if(this.intance){
+      return this.intance;
+    }
+    this.intance = new HeatMap();
+    return this.intance;
+  }
   constructor(gameState){
     this.gameState = gameState;
     this.gameMap = gameState.map;
     this.width = gameState.map.width;
     this.height = gameState.map.height;
+
+    this.cityRoles = new Map();
+    this.workerRoles = new Map();
+    
+    this.tile = {};
   }
   update(gameState) {
     this.gameState = gameState;
     this.gameMap = gameState.map;
     this.player = gameState.players[gameState.id];
     this.enemy = gameState.players[(gameState.id + 1) % 2];
-    this.enemyUnitsPosArray = new Array();
-    this.playerUnitsPosArray = new Array();
-    this.tile = {};
+
+    
    
     this.map = new Array(this.height).fill().map(() => new Array(this.width).fill());
     
     this.map = this.initializeMap(this.gameMap);
     this.tile = this.updateWorkers();
 
-  const fs = require('fs');
-  fs.writeFile("/Users/vjame/Desktop/Projects/GitHub/ArrozConPollo.texto.txt", JSON.stringify(obj), function(err) {
-}); 
+
     if(gameState.turn == 1){
     console.table(this.map)
     return this.map;
