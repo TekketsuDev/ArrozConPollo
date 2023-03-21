@@ -1,5 +1,5 @@
 "use strict";
-const GAME_CONSTANTS = require('../lux/game_constants');
+const GAME_CONSTANTS = require('../../lux/game_constants');
 class HeatMap {
   constructor(gameState){
     this.gameState = gameState;
@@ -20,7 +20,14 @@ class HeatMap {
     
     this.map = this.initializeMap(this.gameMap);
     this.tile = this.updateWorkers();
+
+  const fs = require('fs');
+  fs.writeFile("/Users/vjame/Desktop/Projects/GitHub/ArrozConPollo.texto.txt", JSON.stringify(obj), function(err) {
+}); 
+    if(gameState.turn == 1){
+    console.table(this.map)
     return this.map;
+  }
     //this.lol = this.mostEfficientTile(this.gameMap,this.heat);
   }
   initializeMap(gameMap){
@@ -46,9 +53,6 @@ class HeatMap {
       |  EnemyCity  |                   -                            |       -             |  EnemyWorker(ID)
       |  canBuild   | WanttoBuild/ willMove/ Stay, WanttoStay/ Taken | FuelxTurn(if City)  | OwnWorker(ID)/ EnemyWorker(ID)
     */
-
-    
-
     if(cell.hasResource()){
       //Have in consideration the enemy if its gathering resources better loop that in workers map
       if(cell.resource.type === GAME_CONSTANTS.RESOURCE_TYPES.WOOD){
@@ -129,9 +133,9 @@ class HeatMap {
     }
   }
 
-  woodMapCity(){
-    
-  }
+ getPath(){
+  
+}
   bestCityTileSpot(CityRole, CityID){
     switch (CityRole) {
       case 'Research':

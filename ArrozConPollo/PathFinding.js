@@ -1,5 +1,4 @@
 "use strict";
-
 class PathFinding
 {
 	constructor(i,j)
@@ -7,11 +6,8 @@ class PathFinding
 		this.i=i;
 		this.j=j;
 	}
-}
 
-
-function findPath(gameMap, pathX, pathY, DesiredCell)
-{
+	findPath(gameMap, pathX, pathY, DesiredCell){
 	// 1) Create BFS queue q
 		let queue = [];
     // 2) Push Starting Cell
@@ -65,16 +61,18 @@ function findPath(gameMap, pathX, pathY, DesiredCell)
 			
 		}
 			
-	// BFS algorithm terminated without returning true
-	// then there was no element gameMap[i][j] which is 2, then
-	// return false
-		return false;
+		// BFS algorithm terminated without returning true
+		// then there was no element gameMap[i][j] which is 2, then
+		// return false
+			return false;
+	}
 }
 
 // Main Driver code
 let gameMap= 
 [[ 0, 3, 0, 'Ud1'],
 [ 3, 0, 3, 3 ],
+[3,]
 [ 'Fuel', 3, 3, 3 ],
 [ 0, 3, 3, 3 ]];
 gameMap.height = 4;
@@ -85,3 +83,4 @@ if(findPath(gameMap,0, 3,'Fuel') == true)
 else
 	console.log("No");
 
+module.exports = PathFinding;

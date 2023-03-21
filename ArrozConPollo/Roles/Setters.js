@@ -1,0 +1,2 @@
+class Setters extends Worker{
+}

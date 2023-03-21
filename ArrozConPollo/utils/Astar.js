@@ -1,20 +1,17 @@
 "use strict";
 class Astar {
-  constructor(gameState){
+  constructor(gameState, startingCell ,destinationCell){
     this.gameState = gameState;
     this.gameMap = gameState.map;
     this.player = gameState.players[gameState.id];
     this.enemy = gameState.players[(gameState.id + 1) % 2];
     this.openSet = []; //array containing unevaluated grid points
     this.closedSet = []; //array containing completely evaluated grid points
-    this.start; //starting grid point
-    this.end; // ending grid point (goal)
+    this.start = startingCell; //starting grid point
+    this.end = destinationCell; // ending grid point (goal)
     this.path = [];
   }
-  getArrayPath(){
-  
-  return this.path;
-  }
+
     //heuristic we will be using - Manhattan distance
   //for other heuristics visit - https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
   heuristic(position0, position1) {
@@ -69,9 +66,6 @@ class Astar {
       }
     }
   
-    this.start = gameMap[0][0];
-    this.end = gameMap[gameMap.height - 1][gameMap.width - 1];
-  
     this.openSet.push(start);
   
     console.log(gameMap);
@@ -115,7 +109,7 @@ class Astar {
   
         if (!closedSet.includes(neighbor)) {
           let possibleG = current.g + 1;
-  
+          
           if (!openSet.includes(neighbor)) {
             openSet.push(neighbor);
           } else if (possibleG >= neighbor.g) {

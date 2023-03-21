@@ -4,25 +4,12 @@ class WorkerRole{
     constructor(idWorker, currentRole, currentPosition, destionation){
         this.role = role;
     }
-    update(){
-    switch(currentRole) {
-        case this.WorkerRole.Gatherer:
-            // Do 
-            break;
-        case this.WorkerRole.ChinoFarmer:
-            // Do ChinoFarmer
-            break;
-        case WorkerRole.Frontier:
-            //Do Fronterize
-            break;
-        }
-
-        }
-
-    Gatherer(){
-        
+    
+    fuelCarried() {
+        let u = World_1.World.GetInstance().own_units.get(this.u_id);
+        return u.cargo.wood + u.cargo.coal * 10 + u.cargo.uranium * 40;
     }
-        }
+}
 
 
 
